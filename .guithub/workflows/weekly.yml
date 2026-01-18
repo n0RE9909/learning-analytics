@@ -1,0 +1,40 @@
+name: Weekly Report
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' 
+  workflow_dispatch:      
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Generate sample report
+      run: |
+        echo "# Weekly Learning Analytics Report" > report.md
+        echo "Generated: $(date)" >> report.md
+        echo "## Summary" >> report.md
+        echo "- Total students analyzed: 150" >> report.md
+        echo "- At-risk students identified: 12" >> report.md
+        echo "- Average grade prediction accuracy: 87%" >> report.md
+    
+    - name: Upload report
+      uses: actions/upload-artifact@v3
+      with:
+        name: weekly-report
+        path: report.md
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        keep_files: true
